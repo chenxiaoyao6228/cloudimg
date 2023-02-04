@@ -4,4 +4,4 @@
 
 repo 地址: https://github.com/chenxiaoyao6228/cloudimg.git
 
-图片前缀: https://cdn.jsdelivr.net
+图片前缀: https://cdn.jsdelivr.net/gh/chenxiaoyao6228/cloudimg@main
