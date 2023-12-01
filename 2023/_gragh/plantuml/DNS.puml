@@ -1,0 +1,35 @@
+@startuml
+
+!define ROOT_SERVER_IP "根域名服务器 IP"
+!define TLD_SERVER_IP "顶级域名服务器 IP"
+!define AUTHORITATIVE_SERVER_IP "权威域名服务器 IP"
+!define LOCAL_DNS_CACHE "本地 DNS 缓存"
+
+actor 用户
+participant 操作系统 as "操作系统"
+participant 浏览器 as "Web 浏览器"
+
+
+用户 -> 浏览器: 输入 'juejin.cn'
+浏览器 -> 操作系统: 发起 'juejin.cn' 的 DNS 解析请求
+操作系统 -> 本地缓存: 检查 'juejin.cn' 的本地缓存
+
+alt 命中缓存
+  操作系统 --> 浏览器: 从本地缓存返回 IP 地址
+else 未命中缓存
+  操作系统 -> 浏览器: 转发至根域名服务器查询 'juejin.cn'
+  浏览器 -> 操作系统: 发送 DNS 查询请求到根域名服务器，查询 'juejin.cn'
+  操作系统 -> ROOT_SERVER_IP: 发送 DNS 查询请求到根域名服务器，查询 'juejin.cn'
+  ROOT_SERVER_IP --> 操作系统: 返回带有顶级域名服务器 IP 的响应
+  操作系统 -> 浏览器: 转发至顶级域名服务器查询 'juejin.cn'
+  浏览器 -> 操作系统: 发送 DNS 查询请求到顶级域名服务器，查询 'juejin.cn'
+  操作系统 -> TLD_SERVER_IP: 发送 DNS 查询请求到顶级域名服务器，查询 'juejin.cn'
+  TLD_SERVER_IP --> 操作系统: 返回带有权威域名服务器 IP 的响应
+  操作系统 -> 浏览器: 转发至权威域名服务器查询 'juejin.cn'
+  浏览器 -> 操作系统: 发送 DNS 查询请求到权威域名服务器，查询 'juejin.cn'
+  操作系统 -> AUTHORITATIVE_SERVER_IP: 发送 DNS 查询请求到权威域名服务器，查询 'juejin.cn'
+  AUTHORITATIVE_SERVER_IP --> 操作系统: 返回带有 'juejin.cn' IP 地址的响应
+  操作系统 -> 本地缓存: 更新本地缓存，存储 'juejin.cn' 对应的 IP 地址
+  操作系统 --> 浏览器: 返回 'juejin.cn' 的 IP 地址
+end
+@enduml
